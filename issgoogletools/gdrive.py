@@ -36,7 +36,7 @@ def create_folder(drive_service, parent = '',folder_name = ''):
         }
         if parent:
             file_metadata['parents'] = [parent]
-        print(file_metadata)
+        #print(file_metadata)
         file = drive_service.files().create(body=file_metadata, fields='id').execute()
         fid = file.get('id')
         return fid
