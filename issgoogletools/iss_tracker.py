@@ -5,6 +5,7 @@ from PyQt5 import uic, QtCore
 import pkg_resources
 from glob import glob
 import os
+from historydict import HistoryDict
 
 from .initialize import get_gdrive_service
 from .gdrive import folder_exists_in_root, create_folder, folder_exists, upload_file
@@ -27,19 +28,23 @@ class ISSTracker(*uic.loadUiType(ui_path)):
         self.timer_update_user_info.start(20 * 1000)
         self.service = get_gdrive_service()
         self.reset_metadata()
-        self.set_location()
         self.tracking = False
-        self.push_
+        self.push_track.clicked.connect(self.track_push_manager)
+        self.push_reset_metadata.clicked.connect(self.reset_metadata)
+        self.push_move_all.clicked.connect(self.push_all)
+
 
     def reset_metadata(self):
         ROOT_PATH = '/nsls2/xf08id'
         USER_FILEPATH = 'users'
+        self.RE.md = HistoryDict('/nsls2/xf08id/metadata/bluesky_history.db')
         self.year = self.RE.md['year']
         self.cycle = self.RE.md['cycle']
         self.proposal = self.RE.md['PROPOSAL']
         self.folder = f"{ROOT_PATH}/{USER_FILEPATH}/{self.year}/{self.cycle}/{self.proposal}/"
         self.folder_list = glob(f'{self.folder}*.dat')
         self.label_metadata.setText(f'Year: {self.year} Cycle: {self.cycle} Proposal: {self.proposal}')
+        self.set_location()
 
 
 
@@ -72,23 +77,27 @@ class ISSTracker(*uic.loadUiType(ui_path)):
         self.canvas = FigureCanvas(self.figureBinned)
 
     def check_folder(self):
-        self.new_folder_list = glob(f'{self.folder}*.dat')
-        print(f'Now {len(self.new_folder_list)}')
-        new_files = list(set(self.new_folder_list) - set(self.folder_list))
-        if new_files!=[]:
-            self.folder_list = self.new_folder_list
-            for file in new_files:
-                print(f'New file found {file}')
-                upload_file(self.service, parent=self.location, file_name=os.path.basename(file), from_local_file = file)
-        else:
-            print('nooooooo')
-
+        if self.tracking is True:
+            self.new_folder_list = glob(f'{self.folder}*.dat')
+            print(f'Now {len(self.new_folder_list)}')
+            new_files = list(set(self.new_folder_list) - set(self.folder_list))
+            if new_files!=[]:
+                self.folder_list = self.new_folder_list
+                for file in new_files:
+                    print(f'New file found {file}')
+                    upload_file(self.service, parent=self.location, file_name=os.path.basename(file), from_local_file = file)
+            else:
+                print('nooooooo')
 
     def track_push_manager(self):
-        if self.push_track.isDown():
-            print('down')
-        else:
-            print('up')
+        self.tracking = self.push_track.isChecked()
+
+    def push_all(self):
+        files = glob(f'{self.folder}*.dat')
+        for file in files:
+            print(f'New file found {file}')
+            upload_file(self.service, parent=self.location, file_name=os.path.basename(file), from_local_file=file)
+
 
 
 
