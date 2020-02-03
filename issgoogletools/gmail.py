@@ -14,5 +14,10 @@ def create_html_message(sender, to, subject, message_text):
 def upload_draft(gmail_service, message_body, user_id="me"):
     message = {'message': message_body}
     draft = gmail_service.users().drafts().create(userId=user_id, body=message).execute()
-    print( 'Draft id: %s\nDraft message: %s' % (draft['id'], draft['message']))
+    #print( 'Draft id: %s\nDraft message: %s' % (draft['id'], draft['message']))
     return draft
+
+
+def send_draft(gmail_service, draft):
+    sent = gmail_service.users().drafts().send(userId ='me', body = {'id': draft['id']}).execute()
+    return sent

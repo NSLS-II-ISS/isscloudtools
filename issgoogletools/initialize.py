@@ -22,6 +22,7 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import dropbox
 
 # If modifying these scopes, delete the file token.pickle.
 
@@ -69,8 +70,9 @@ def get_gmail_service():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials_gmail.json', SCOPES)
+            home_directory = os.path.expanduser("~")
+            credentials_file = f'{home_directory}/credentials_gmail.json'
+            flow = InstalledAppFlow.from_client_secrets_file( credentials_file, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token_gmail.pickle', 'wb') as token:
@@ -80,19 +82,12 @@ def get_gmail_service():
     return service
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+def get_dropbox_service():
+    token_file = open('/nsls2/xf08id/settings/Dropbox token.txt')
+    token = token_file.read()
+    dbx = dropbox.Dropbox(token)
+    token_file.close()
+    return dbx
 
 #
 #
