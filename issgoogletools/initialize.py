@@ -46,7 +46,7 @@ def get_gdrive_service():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                '/home/xf08id/credentials.json', SCOPES)
+                '/home/xf08id/settings/credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
@@ -70,8 +70,8 @@ def get_gmail_service():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            home_directory = os.path.expanduser("~")
-            credentials_file = f'{home_directory}/credentials_gmail.json'
+
+            credentials_file = '/nsls2/xf08id/settings/credentials_gmail.json'
             flow = InstalledAppFlow.from_client_secrets_file( credentials_file, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
