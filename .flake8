@@ -5,6 +5,6 @@ exclude =
     build,
     dist,
     versioneer.py,
-    issgoogletools/_version.py,
+    isscloudtools/_version.py,
     docs/source/conf.py
 max-line-length = 115

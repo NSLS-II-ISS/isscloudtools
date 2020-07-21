@@ -1,6 +1,6 @@
 [run]
 source =
-    issgoogletools
+    isscloudtools
 [report]
 omit =
     */python?.?/*

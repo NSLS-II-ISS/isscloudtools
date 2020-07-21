@@ -2,8 +2,8 @@
 Usage
 =====
 
-Start by importing issgoogletools.
+Start by importing isscloudtools.
 
 .. code-block:: python
 
-    import issgoogletools
+    import isscloudtools

@@ -53,3 +53,6 @@ def upload_file(drive_service, parent = '', file_name='', from_local_file=''):
     return file_id
 
 
+def get_file_list(drive_service, fid = ''):
+    query = "'{}' in parents".format(fid)
+    return drive_service.files().list(q= query, spaces='drive', fields='nextPageToken, files(id, name)', pageToken='').execute()

@@ -10,7 +10,7 @@ from historydict import HistoryDict
 from .initialize import get_gdrive_service
 from .gdrive import folder_exists_in_root, create_folder, folder_exists, upload_file
 
-ui_path = pkg_resources.resource_filename('issgoogletools', 'ui/Tracker.ui')
+ui_path = pkg_resources.resource_filename('isscloudtools', 'ui/Tracker.ui')
 
 class ISSTracker(*uic.loadUiType(ui_path)):
 
