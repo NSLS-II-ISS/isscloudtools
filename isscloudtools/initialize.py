@@ -23,10 +23,9 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import dropbox
+from slack import WebClient
 
 # If modifying these scopes, delete the file token.pickle.
-
-
 
 def get_gdrive_service():
     SCOPES = ['https://www.googleapis.com/auth/drive']
@@ -46,7 +45,7 @@ def get_gdrive_service():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                '/home/xf08id/credentials.json', SCOPES)
+                '/nsls2/xf08id/settings/credentials_gdrive.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
@@ -90,14 +89,20 @@ def get_dropbox_service():
     return dbx
 
 
+def get_slack_service():
+    token_file = open('/nsls2/xf08id/settings/Slack token.txt')
+    token = token_file.read()
+    return WebClient(token=token)
+
+
 def get_gsheets_service():
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets.modify']
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
+    if os.path.exists('token_sheets.pickle'):
+        with open('token_sheets.pickle', 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -108,7 +113,7 @@ def get_gsheets_service():
                 '/nsls2/xf08id/settings/credentials_sheets.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
+        with open('token_sheets.pickle', 'wb') as token:
             pickle.dump(creds, token)
 
     service = build('sheets', 'v4', credentials=creds)
