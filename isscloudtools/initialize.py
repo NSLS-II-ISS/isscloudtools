@@ -90,9 +90,12 @@ def get_dropbox_service():
 
 
 def get_slack_service():
-    token_file = open('/nsls2/xf08id/settings/Slack token.txt')
-    token = token_file.read()
-    return WebClient(token=token)
+    token_file = open('/nsls2/xf08id/settings/Slack Bot token.txt')
+    token_bot = token_file.read()
+    token_file = open('/nsls2/xf08id/settings/Slack Oath token.txt')
+    token_oath = token_file.read()
+
+    return WebClient(token=token_bot),  WebClient(token=token_oath)
 
 
 def get_gsheets_service():
