@@ -3,7 +3,7 @@ def slack_create_channel(client,channel_name ):
     return channel.data['channel']['id'], channel.data['channel']
 
 
-def slack_invite_to_channel(client, channel_id, users = ['U016TSW4MSB', 'U018F0DLENQ']):
+def slack_invite_to_channel(client, channel_id, users = ['U016TSW4MSB', 'U018F0DLENQ', 'U01RR69G6E8']):
     return client.conversations_invite(channel=channel_id, users=users).data['ok']
 
 
