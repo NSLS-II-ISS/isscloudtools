@@ -26,7 +26,7 @@ class CloudDispatcher():
     def set_contact_info(self,email):
         self.email = email
 
-    def load_to_dropbox(self,path):
+    def load_to_dropbox(self,path, year = None, cycle = None, proposal = None ):
         df, header = load_binned_df_from_file(path)
         h = header.replace('#', '')
         h = h.replace('\n', ',')
@@ -35,8 +35,10 @@ class CloudDispatcher():
             if ':' in element:
                 x = element.split(':')
                 d[x[0]] = x[1]
-        year, cycle = d['Facility.cycle'].split('-')
-        proposal = d['Facility.GUP']
+        if (year is None )&(cycle is None):
+            year, cycle = d['Facility.cycle'].split('-')
+        if proposal is None:
+            proposal = d['Facility.GUP']
         dn = '/{}/{}/{}/'.format(year, cycle, proposal).replace(' ', '')
         dropbox_upload_files(self.dropbox_service,path, dn, os.path.basename(path))
 
