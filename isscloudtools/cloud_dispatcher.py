@@ -27,19 +27,26 @@ class CloudDispatcher():
         self.email = email
 
     def load_to_dropbox(self,path, year = None, cycle = None, proposal = None ):
-        df, header = load_binned_df_from_file(path)
-        h = header.replace('#', '')
-        h = h.replace('\n', ',')
-        d = dict()
-        for element in h.split(', '):
-            if ':' in element:
-                x = element.split(':')
-                d[x[0]] = x[1]
-        if (year is None )&(cycle is None):
-            year, cycle = d['Facility.cycle'].split('-')
-        if proposal is None:
-            proposal = d['Facility.GUP']
-        dn = '/{}/{}/{}/'.format(year, cycle, proposal).replace(' ', '')
+        if (year is None) or (cycle is None) or (proposal is None):
+            df, header = load_binned_df_from_file(path)
+            h = header.replace('#', '')
+            h = h.replace('\n', ',')
+            d = dict()
+            for element in h.split(', '):
+                if ':' in element:
+                    x = element.split(':')
+                    d[x[0]] = x[1]
+            if (year is None )&(cycle is None):
+                year, cycle = d['Facility.cycle'].split('-')
+            if proposal is None:
+                proposal = d['Facility.GUP']
+        dn = '/{}/{}/{}'.format(year, cycle, proposal).replace(' ', '')
+
+        idx_proposal = path.find(proposal)
+        aux_dn, _ = os.path.split(path[(idx_proposal + len(proposal)):])
+        dn += aux_dn
+        if dn[-1] != '/': dn +='/'
+
         dropbox_upload_files(self.dropbox_service,path, dn, os.path.basename(path))
 
     def post_to_slack(self,path,slack_channel):
@@ -50,9 +57,13 @@ class CloudDispatcher():
                            image_path,slack_channel,
                            os.path.basename(path).split('.')[0])
 
-
-
-
+# dn = '/{}/{}/{}'.format(year, cycle, proposal).replace(' ', '')
+# path = '/nsls2/data/iss/legacy/processed/2022/2/309855/tiff_storage/bla.dat'
+# # path = '/nsls2/data/iss/legacy/processed/2022/2/309855/image0296.tif'
+# proposal = '309855'
+# idx_proposal = path.find(proposal)
+# aux_dn, _ = os.path.split(path[(idx_proposal+len(proposal)):])
+# dn += aux_dn
 
 def generate_output_figures(filepath, imagepath=None, t_flag=True, f_flag=True, r_flag=True):
     plt.ioff()
