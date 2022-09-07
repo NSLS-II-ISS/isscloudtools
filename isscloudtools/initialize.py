@@ -39,7 +39,7 @@ def get_gdrive_service():
     # created automatically when the authorization flow completes for the first
     # time.
     if os.path.exists(os.path.join(SETTINGS_DIR, 'token_gdrive.pickle')):
-        with open(os.path.join(SETTINGS_DIR, 'token_gdrive.pickle', 'rb')) as token:
+        with open(os.path.join(SETTINGS_DIR, 'token_gdrive.pickle'), 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
