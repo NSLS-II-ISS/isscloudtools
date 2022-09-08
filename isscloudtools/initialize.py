@@ -27,6 +27,8 @@ from slack import WebClient
 
 # If modifying these scopes, delete the file token.pickle.
 
+SETTINGS_DIR = "/nsls2/data/iss/legacy/xf08id/settings"
+
 def get_gdrive_service():
     SCOPES = ['https://www.googleapis.com/auth/drive']
     """Shows basic usage of the Drive v3 API.
@@ -36,8 +38,8 @@ def get_gdrive_service():
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('/nsls2/xf08id/settings/token_gdrive.pickle'):
-        with open('/nsls2/xf08id/settings/token_gdrive.pickle', 'rb') as token:
+    if os.path.exists(os.path.join(SETTINGS_DIR, 'token_gdrive.pickle')):
+        with open(os.path.join(SETTINGS_DIR, 'token_gdrive.pickle'), 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -45,10 +47,10 @@ def get_gdrive_service():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                '/nsls2/xf08id/settings/credentials_gdrive.json', SCOPES)
+                os.path.join(SETTINGS_DIR, 'credentials_gdrive.json'), SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('/nsls2/xf08id/settings/token_gdrive.pickle', 'wb') as token:
+        with open(os.path.join(SETTINGS_DIR, 'token_gdrive.pickle'), 'wb') as token:
             pickle.dump(creds, token)
 
     service = build('drive', 'v3', credentials=creds)
@@ -61,8 +63,8 @@ def get_gmail_service():
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('/nsls2/xf08id/settings/token_gmail.pickle'):
-        with open('/nsls2/xf08id/settings/token_gmail.pickle', 'rb') as token:
+    if os.path.exists(os.path.join(SETTINGS_DIR, 'token_gmail.pickle')):
+        with open(os.path.join(SETTINGS_DIR, 'token_gmail.pickle'), 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -70,11 +72,11 @@ def get_gmail_service():
             creds.refresh(Request())
         else:
 
-            credentials_file = '/nsls2/xf08id/settings/credentials_gmail.json'
+            credentials_file = os.path.join(SETTINGS_DIR, 'credentials_gmail.json')
             flow = InstalledAppFlow.from_client_secrets_file( credentials_file, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('/nsls2/xf08id/settings/token_gmail.pickle', 'wb') as token:
+        with open(os.path.join(SETTINGS_DIR, 'token_gmail.pickle'), 'wb') as token:
             pickle.dump(creds, token)
 
     service = build('gmail', 'v1', credentials=creds)
@@ -82,7 +84,7 @@ def get_gmail_service():
 
 
 def get_dropbox_service():
-    token_file = open('/nsls2/xf08id/settings/Dropbox token.txt')
+    token_file = open(os.path.join(SETTINGS_DIR, 'Dropbox token.txt'))
     token = token_file.read()
     dbx = dropbox.Dropbox(token)
     token_file.close()
@@ -90,9 +92,9 @@ def get_dropbox_service():
 
 
 def get_slack_service():
-    token_file = open('/nsls2/xf08id/settings/Slack Bot token.txt')
+    token_file = open(os.path.join(SETTINGS_DIR, 'Slack Bot token.txt'))
     token_bot = token_file.read()
-    token_file = open('/nsls2/xf08id/settings/Slack Oath token.txt')
+    token_file = open(os.path.join(SETTINGS_DIR, 'Slack Oath token.txt'))
     token_oath = token_file.read()
 
     return WebClient(token=token_bot),  WebClient(token=token_oath)
@@ -104,8 +106,8 @@ def get_gsheets_service():
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('/nsls2/xf08id/settings/token_sheets.pickle'):
-        with open('/nsls2/xf08id/settings/token_sheets.pickle', 'rb') as token:
+    if os.path.exists(os.path.join(SETTINGS_DIR, 'token_sheets.pickle')):
+        with open(os.path.join(SETTINGS_DIR, 'token_sheets.pickle'), 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -113,10 +115,10 @@ def get_gsheets_service():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                '/nsls2/xf08id/settings/credentials_sheets.json', SCOPES)
+                os.path.join(SETTINGS_DIR, 'credentials_sheets.json'), SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('/nsls2/xf08id/settings/token_sheets.pickle', 'wb') as token:
+        with open(os.path.join(SETTINGS_DIR, 'token_sheets.pickle'), 'wb') as token:
             pickle.dump(creds, token)
 
     service = build('sheets', 'v4', credentials=creds)
