@@ -85,8 +85,23 @@ def get_gmail_service():
 
 def get_dropbox_service():
     token_file = open(os.path.join(SETTINGS_DIR, 'Dropbox token.txt'))
-    token = token_file.read()
+    # token_file = open(os.path.join(SETTINGS_DIR, 'token_dropbox_staff8id.txt'))
+    token = token_file.read()[:-1]
     dbx = dropbox.Dropbox(token)
+    # dbx = dropbox.Dropbox(oauth2_access_token=token,
+    #                       max_retries_on_error=4,
+    #                         max_retries_on_rate_limit=None,
+    #                         user_agent=None,
+    #                         session=None,
+    #                         headers=None,
+    #                         timeout=100,
+    #                         oauth2_refresh_token=None,
+    #                         oauth2_access_token_expiration=None,
+    #                         app_key=None,
+    #                         app_secret=None,
+    #                         scope=None,
+    #                     )
+
     token_file.close()
     return dbx
 
