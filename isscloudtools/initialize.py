@@ -1,6 +1,7 @@
 
 
 from __future__ import print_function
+
 # import httplib2
 # import os
 #
@@ -24,6 +25,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import dropbox
 from slack import WebClient
+import json
 
 # If modifying these scopes, delete the file token.pickle.
 
@@ -83,13 +85,45 @@ def get_gmail_service():
     return service
 
 
+
 def get_dropbox_service():
-    token_file = open(os.path.join(SETTINGS_DIR, 'Dropbox token.txt'))
-    token = token_file.read()
-    dbx = dropbox.Dropbox(token)
-    token_file.close()
+    token_file = os.path.join(SETTINGS_DIR, 'dropbox_token.json')
+    with open(token_file, "r") as outfile:
+        dropbox_auth = json.load(outfile) 
+    APP_KEY = dropbox_auth['app_id']
+    refresh_token = dropbox_auth['refresh_token']
+    outfile.close()
+    dbx=dropbox.Dropbox(oauth2_refresh_token=refresh_token, app_key=APP_KEY)
     return dbx
 
+    
+'''
+
+#If need refresher, the authentication flow is at this link
+# https://www.dropboxforum.com/t5/Dropbox-API-Support-Feedback/Oauth2-refresh-token-question-what-happens-when-the-refresh/td-p/486241
+#obsolete approach
+def get_dropbox_service():
+    token_file = open(os.path.join(SETTINGS_DIR, 'Dropbox token.txt'))
+    # token_file = open(os.path.join(SETTINGS_DIR, 'token_dropbox_staff8id.txt'))
+    token = token_file.read()[:-1]
+    dbx = dropbox.Dropbox(token)
+    # dbx = dropbox.Dropbox(oauth2_access_token=token,
+    #                       max_retries_on_error=4,
+    #                         max_retries_on_rate_limit=None,
+    #                         user_agent=None,
+    #                         session=None,
+    #                         headers=None,
+    #                         timeout=100,
+    #                         oauth2_refresh_token=None,
+    #                         oauth2_access_token_expiration=None,
+    #                         app_key=None,
+    #                         app_secret=None,
+    #                         scope=None,
+    #                     )
+
+    token_file.close()
+    return dbx
+'''
 
 def get_slack_service():
     token_file = open(os.path.join(SETTINGS_DIR, 'Slack Bot token.txt'))
